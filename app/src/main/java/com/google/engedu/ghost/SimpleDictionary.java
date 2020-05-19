@@ -65,11 +65,14 @@ public class SimpleDictionary implements GhostDictionary {
                     String midWord = words.get(midIdx);
                     String midWordSubstr = midWord.substring(0, Math.min(midWord.length(), prefix.length()));
                     Log.d("GHST", "Binary search midWord=" + midWord + " midWordSubstr=" + midWordSubstr);
-                    if (prefix.compareTo(midWordSubstr) > 0) {
+                    if (prefix.compareTo(midWord) > 0) {
                         loIdx = midIdx + 1;
                         midIdx = loIdx + (hiIdx - loIdx) / 2;
-                    } else if (prefix.compareTo(midWordSubstr) < 0) {
+                    } else if (prefix.compareTo(midWord) < 0) {
                         hiIdx = midIdx - 1;
+                        midIdx = loIdx + (hiIdx - loIdx) / 2;
+                    } else if (prefix.length() > midWord.length()) {
+                        loIdx = midIdx + 1;
                         midIdx = loIdx + (hiIdx - loIdx) / 2;
                     } else {
                         retWord = midWord;
@@ -87,7 +90,7 @@ public class SimpleDictionary implements GhostDictionary {
     }
 
     @Override
-    public String getGoodWordStartingWith(String prefix) {
+    public String getGoodWordStartingWith(String prefix, boolean userTurnFirst) {
         String selected = null;
 
         if (prefix.isEmpty()) {
@@ -114,6 +117,9 @@ public class SimpleDictionary implements GhostDictionary {
                         midIdx = loIdx + (hiIdx - loIdx) / 2;
                     } else if (prefix.compareTo(midWordSubstr) < 0) {
                         hiIdx = midIdx - 1;
+                        midIdx = loIdx + (hiIdx - loIdx) / 2;
+                    } else if (prefix.length() > midWord.length()) {
+                        loIdx = midIdx + 1;
                         midIdx = loIdx + (hiIdx - loIdx) / 2;
                     } else {
                         selected = midWord;
@@ -162,8 +168,13 @@ public class SimpleDictionary implements GhostDictionary {
                 }
 
                 Random rand = new Random();
-                // TODO: choose even or odd depending on who went first
-                selected = goodWordsEven.get(rand.nextInt(goodWordsEven.size()));
+                // Choose an odd-length word if the user played first
+                if (userTurnFirst) {
+                    selected = goodWordsOdd.get(rand.nextInt(goodWordsOdd.size()));
+                }
+                else {
+                    selected = goodWordsEven.get(rand.nextInt(goodWordsEven.size()));
+                }
             }
         }
         Log.d("GHST", "Binary search end");

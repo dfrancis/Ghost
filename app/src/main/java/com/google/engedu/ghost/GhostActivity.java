@@ -41,6 +41,7 @@ public class GhostActivity extends AppCompatActivity {
     private static final int MIN_WORD_LENGTH = 4;
     private GhostDictionary dictionary;
     private boolean userTurn = false;
+    private boolean userTurnFirst = false;
     private Random random = new Random();
     private String wordFragment = null;
 
@@ -90,6 +91,7 @@ public class GhostActivity extends AppCompatActivity {
      */
     public boolean onStart(View view) {
         userTurn = random.nextBoolean();
+        userTurnFirst = userTurn;
         TextView text = (TextView) findViewById(R.id.ghostText);
         wordFragment = new String();
         text.setText("");
@@ -120,7 +122,8 @@ public class GhostActivity extends AppCompatActivity {
             // If no word can be formed from the current word fragment, also declare victory
             // for the computer
             //
-            String longerWord = dictionary.getAnyWordStartingWith(wordFragment);
+            // String longerWord = dictionary.getAnyWordStartingWith(wordFragment);
+            String longerWord = dictionary.getGoodWordStartingWith(wordFragment, userTurnFirst);
             if (longerWord == null) {
                 label.setText(WORD_INVALID + " " + COMPUTER_WINS);
             }
@@ -163,7 +166,7 @@ public class GhostActivity extends AppCompatActivity {
 
     public boolean onPressChallenge(View view) {
         TextView label = (TextView) findViewById(R.id.gameStatus);
-        if (wordFragment.length() >= MIN_WORD_LENGTH) {
+        if ((wordFragment.length() >= MIN_WORD_LENGTH) && (dictionary.isWord(wordFragment))) {
             label.setText(USER_WINS);
         }
         else {
