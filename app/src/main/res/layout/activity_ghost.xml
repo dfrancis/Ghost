@@ -42,5 +42,26 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <Button
+        android:id="@+id/button_challenge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gameStatus"
+        android:layout_alignParentStart="true"
+        android:onClick="onPressChallenge"
+        android:text="@string/button_challenge_string"
+        tools:text="@string/button_challenge_string" />
+
+    <Button
+        android:id="@+id/button_restart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gameStatus"
+        android:layout_alignTop="@id/button_challenge"
+        android:layout_toEndOf="@id/button_challenge"
+        android:onClick="onStart"
+        android:text="@string/button_restart_string"
+        tools:text="@string/button_restart_string" />
+
 
 </RelativeLayout>

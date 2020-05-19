@@ -33,21 +33,30 @@ import java.util.Random;
 
 public class GhostActivity extends AppCompatActivity {
     private static final String COMPUTER_TURN = "Computer's turn";
+    private static final String COMPUTER_WINS = "Computer wins";
+    private static final String WORD_INVALID = "Word invalid";
     private static final String USER_TURN = "Your turn";
+    private static final String USER_WINS = "You win";
+    private static final String VALID_WORD = "Complete word";
+    private static final int MIN_WORD_LENGTH = 4;
     private GhostDictionary dictionary;
     private boolean userTurn = false;
     private Random random = new Random();
+    private String wordFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ghost);
         AssetManager assetManager = getAssets();
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+
+        try {
+            InputStream inStream = assetManager.open("words.txt");
+            dictionary = new SimpleDictionary(inStream);
+        }
+        catch (Exception e) {
+            // TODO
+        }
         onStart(null);
     }
 
@@ -82,6 +91,7 @@ public class GhostActivity extends AppCompatActivity {
     public boolean onStart(View view) {
         userTurn = random.nextBoolean();
         TextView text = (TextView) findViewById(R.id.ghostText);
+        wordFragment = new String();
         text.setText("");
         TextView label = (TextView) findViewById(R.id.gameStatus);
         if (userTurn) {
@@ -95,9 +105,37 @@ public class GhostActivity extends AppCompatActivity {
 
     private void computerTurn() {
         TextView label = (TextView) findViewById(R.id.gameStatus);
+        //
         // Do computer turn stuff then make it the user's turn again
-        userTurn = true;
-        label.setText(USER_TURN);
+        //
+
+        //
+        // If user formed a complete word, declare victory for the computer
+        //
+        if (dictionary.isWord(wordFragment) && wordFragment.length() >= MIN_WORD_LENGTH) {
+            label.setText(COMPUTER_WINS);
+        }
+        else {
+            //
+            // If no word can be formed from the current word fragment, also declare victory
+            // for the computer
+            //
+            String longerWord = dictionary.getAnyWordStartingWith(wordFragment);
+            if (longerWord == null) {
+                label.setText(WORD_INVALID + " " + COMPUTER_WINS);
+            }
+            else {
+                //
+                // Add a letter to the word fragment and give the user a turn
+                //
+                wordFragment = longerWord.substring(0, wordFragment.length() + 1);
+                TextView text = (TextView) findViewById(R.id.ghostText);
+                text.setText(wordFragment);
+
+                userTurn = true;
+                label.setText(USER_TURN);
+            }
+        }
     }
 
     /**
@@ -108,11 +146,35 @@ public class GhostActivity extends AppCompatActivity {
      */
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
-        return super.onKeyUp(keyCode, event);
+        if (! Character.isLetter(event.getUnicodeChar())) {
+            return super.onKeyUp(keyCode, event);
+        }
+        TextView label = (TextView) findViewById(R.id.gameStatus);
+        wordFragment += (char) event.getUnicodeChar();
+        TextView text = (TextView) findViewById(R.id.ghostText);
+        text.setText(wordFragment);
+        if (dictionary.isWord(wordFragment)) {
+            label.setText(VALID_WORD);
+        }
+
+        computerTurn();
+        return true;
+    }
+
+    public boolean onPressChallenge(View view) {
+        TextView label = (TextView) findViewById(R.id.gameStatus);
+        if (wordFragment.length() >= MIN_WORD_LENGTH) {
+            label.setText(USER_WINS);
+        }
+        else {
+            String possibleWord = dictionary.getAnyWordStartingWith(wordFragment);
+            if (possibleWord != null) {
+                label.setText(COMPUTER_WINS + " " + possibleWord);
+            }
+            else {
+                label.setText(USER_WINS);
+            }
+        }
+        return true;
     }
 }
