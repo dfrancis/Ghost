@@ -59,7 +59,7 @@
         android:layout_below="@id/gameStatus"
         android:layout_alignTop="@id/button_challenge"
         android:layout_toEndOf="@id/button_challenge"
-        android:onClick="onStart"
+        android:onClick="onReset"
         android:text="@string/button_restart_string"
         tools:text="@string/button_restart_string" />
 

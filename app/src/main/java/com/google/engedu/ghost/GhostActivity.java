@@ -23,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ public class GhostActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("GHST", "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ghost);
         AssetManager assetManager = getAssets();
@@ -58,7 +60,49 @@ public class GhostActivity extends AppCompatActivity {
         catch (Exception e) {
             // TODO
         }
-        onStart(null);
+        onReset(null);
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d("GHST", "onStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.d("GHST", "onRestart");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d("GHST", "onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("GHST", "onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d("GHST", "onResume");
+        super.onResume();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.d("GHST", "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        Log.d("GHST", "onRestoreInstanceState");
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -89,7 +133,7 @@ public class GhostActivity extends AppCompatActivity {
      * @param view
      * @return true
      */
-    public boolean onStart(View view) {
+    public boolean onReset(View view) {
         userTurn = random.nextBoolean();
         userTurnFirst = userTurn;
         TextView text = (TextView) findViewById(R.id.ghostText);
