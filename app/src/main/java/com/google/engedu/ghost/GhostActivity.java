@@ -55,7 +55,8 @@ public class GhostActivity extends AppCompatActivity {
 
         try {
             InputStream inStream = assetManager.open("words.txt");
-            dictionary = new SimpleDictionary(inStream);
+            // dictionary = new SimpleDictionary(inStream);
+            dictionary = new FastDictionary(inStream);
         }
         catch (Exception e) {
             // TODO
@@ -175,6 +176,7 @@ public class GhostActivity extends AppCompatActivity {
                 //
                 // Add a letter to the word fragment and give the user a turn
                 //
+                Log.d("GHS", "longerWord = " + longerWord);
                 wordFragment = longerWord.substring(0, wordFragment.length() + 1);
                 TextView text = (TextView) findViewById(R.id.ghostText);
                 text.setText(wordFragment);
